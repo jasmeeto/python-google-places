@@ -250,34 +250,35 @@ class GooglePlaces(object):
                     Places (default []).
         pagetoken -- pagetoken for next page request
         """
-        if location is None and lat_lng is None:
-            raise ValueError('One of location or lat_lng must be passed in.')
-        if rankby == 'distance':
-            # As per API docs rankby == distance:
-            #  One or more of keyword, name, or types is required.
-            if keyword is None and types == [] and name is None:
-                raise ValueError('When rankby = googleplaces.ranking.DISTANCE, ' +
-                                 'name, keyword or types kwargs ' +
-                                 'must be specified.')
-        self._sensor = sensor
-        radius = (radius if radius <= GooglePlaces.MAXIMUM_SEARCH_RADIUS
-                  else GooglePlaces.MAXIMUM_SEARCH_RADIUS)
-        lat_lng_str = self._generate_lat_lng_string(lat_lng, location)
-        self._request_params = {'location': lat_lng_str}
-        if rankby == 'prominence':
-            self._request_params['radius'] = radius
-        else:
-            self._request_params['rankby'] = rankby
-        if len(types) > 0:
-            self._request_params['types'] = '|'.join(types)
-        if keyword is not None:
-            self._request_params['keyword'] = keyword
-        if name is not None:
-            self._request_params['name'] = name
-        if language is not None:
-            self._request_params['language'] = language
         if pagetoken is not None:
             self._request_params = {'pagetoken' : pagetoken}
+        else:
+            if location is None and lat_lng is None:
+                raise ValueError('One of location or lat_lng must be passed in.')
+            if rankby == 'distance':
+                # As per API docs rankby == distance:
+                #  One or more of keyword, name, or types is required.
+                if keyword is None and types == [] and name is None:
+                    raise ValueError('When rankby = googleplaces.ranking.DISTANCE, ' +
+                                     'name, keyword or types kwargs ' +
+                                     'must be specified.')
+            self._sensor = sensor
+            radius = (radius if radius <= GooglePlaces.MAXIMUM_SEARCH_RADIUS
+                      else GooglePlaces.MAXIMUM_SEARCH_RADIUS)
+            lat_lng_str = self._generate_lat_lng_string(lat_lng, location)
+            self._request_params = {'location': lat_lng_str}
+            if rankby == 'prominence':
+                self._request_params['radius'] = radius
+            else:
+                self._request_params['rankby'] = rankby
+            if len(types) > 0:
+                self._request_params['types'] = '|'.join(types)
+            if keyword is not None:
+                self._request_params['keyword'] = keyword
+            if name is not None:
+                self._request_params['name'] = name
+            if language is not None:
+                self._request_params['language'] = language
         self._add_required_param_keys()
         url, places_response = _fetch_remote_json(
                 GooglePlaces.NEARBY_SEARCH_API_URL, self._request_params)
