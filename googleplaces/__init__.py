@@ -767,6 +767,13 @@ class GooglePlacesSearchResult(object):
         """Returns a flag denoting if the response had any html attributions."""
         return len(self.html_attributions) > 0
 
+    @property
+    def next_page_token(self):
+        """
+        Returns the nextpagetoken.
+        """
+        return self._pagetoken
+
     def __repr__(self):
         """ Return a string representation stating the number of results."""
         return '<{} with {} result(s)>'.format(self.__class__.__name__, len(self.places))
